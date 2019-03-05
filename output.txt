@@ -1,0 +1,11 @@
+Input error
+square
+rhombi
+rectangle
+parallelograms
+trapezoid
+kite
+quadrilaterals
+quadrilaterals
+quadrilaterals
+kite
