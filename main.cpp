@@ -59,16 +59,16 @@ void check ( ) {
     
 }
 
-//bool errorCheck ( ) {
-//    if (temp.size() % 6 !=0 ) {
-//        myof << "error 1" << endl;
-//        return true;
-//    }
-//
-//
-//
-//    return false;
-//}
+bool errorCheck ( ) {
+    if (temp.size() % 6 !=0 ) {
+        myof << "error 1" << endl;
+        return true;
+    }
+
+
+
+    return false;
+}
 
 void calculation (vector<int> input) {
     

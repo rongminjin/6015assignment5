@@ -1,0 +1,7 @@
+language: cpp
+install: true
+compiler: clang
+os: osx
+script: ./run.sh
+
+
