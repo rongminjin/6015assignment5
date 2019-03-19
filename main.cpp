@@ -7,13 +7,11 @@
 //  Copyright © 2019 Rongmin Jin. All rights reserved.
 //
 
+
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <cmath>
-using namespace std;
-
-
 
 ifstream myif("input.txt");
 ofstream myof("output.txt");
@@ -40,36 +38,34 @@ vector<string> split(const string& str, const string& delim)
     return tokens;
 }
 
-
-
-vector<int>  transformInput ( ) {
-    
-    vector<int> temp ;
+void  transformInput() {
     string tempCor;
     while (getline(myif, tempCor)) {
+        vector<int> temp;
         vector<string> stringTemp = split(tempCor, " ");
-        
         
         try {
             for (int i = 0 ; i < stringTemp.size() ; ++ i) {
-
-            int inter = stoi(tempCor);
-            if (inter < 0 || inter > 100 ) {
-                cout << "error1" << endl;
-                exit (11);
-            }
-            temp.push_back(i);
+                
+                int intTemp = stoi(stringTemp[i]);
+                if (intTemp < 0 || intTemp > 100 ) {
+                    cout << "error1" << endl;
+                    exit (11);
+                }
+                temp.push_back(intTemp);
             }
         } catch (exception e1) {
             cout << "error1" << endl;
-            exit (11);
+            exit (21);
         }
-    }
+        
         if (temp.size() % 6 !=0 ) {
             cout << "error 1" << endl;
-            exit(12);
+            exit(32);
         }
-    return temp;
+        calculation (temp);
+        check();
+    }
     
 }
 
@@ -79,7 +75,7 @@ bool isEqual (double input1, double input2) {
     return false;
 }
 
-void check ( ) {
+void check () {
     if (isEqual(side1, side2)  && isEqual(side2, side3)  && isEqual(diagonal1, diagonal2))
         myof << "square" << endl;
     else if ( isEqual(side1, side2)  && isEqual(side1, side3)   &&  isEqual(side1, side4))
@@ -93,8 +89,13 @@ void check ( ) {
     }
     else if ((isEqual(side1, side4) && isEqual(side2, side3)) || (isEqual(side1, side2) &&isEqual(side4, side3)))
         myof << "kite" << endl;
-    else
+    else{
+        if (isEqual((angle1 + angle2), (angle3 + angle4) ) || isEqual((angle1 + angle3), (angle2 + angle4) ) ) {
+            cout << "error 3" << endl;
+            exit(10);
+        }
         myof <<"quadrilaterals" << endl;
+    }
     
 }
 
@@ -102,24 +103,32 @@ void check ( ) {
 
 void calculation (vector<int> input) {
     
-    for (int i = 0; i < input.size(); i +=6) {
-        
-        for (int j = 0; j <6; ++j) {
-            if (input[i+j] < 0 || input[i+j] > 100 ){
-                cout << "error 1" << endl;
-                exit(13);
-                }
-        }
-        
-        x2 = input[i]; y2 = input[i+1];
-        x3 = input[i+2]; y3 = input[i+3];
-        x4 = input[i+4]; y4 = input[i+5];
-        
+        x2 = input[0]; y2 = input[1];
+        x3 = input[2]; y3 = input[3];
+        x4 = input[4]; y4 = input[5];
+    
         side1 = sqrt(pow(x2-x,2)+ pow (y2-y, 2));
         side2 = sqrt(pow(x3-x2,2)+ pow (y3-y2, 2));
         side3 = sqrt(pow(x4-x3,2)+ pow (y4-y3, 2));
         side4 = sqrt(pow(x-x4,2)+ pow (y-y4, 2));
-        
+    
+    
+    //Nullspace transformation for random test
+    double tempSide1 = 1000 + side1 -1000;
+    double tempSide2 = 1000* side2 /1000;
+    double tempSide3 = 1.0 * side3 ;
+    double tempSide4 = 4000 + side4 - 4000;
+    
+    //assert for random test
+    assert(isEqual(tempSide1, side1));
+    assert(isEqual(tempSide2, side2));
+    assert(isEqual(tempSide3, side3));
+    assert(isEqual(tempSide4, side4));
+
+
+
+    
+    
         diagonal2 =sqrt(pow(x3-x,2)+ pow (y3-y, 2));
         diagonal1 = sqrt(pow(x2-x4,2)+ pow (y2-y4, 2));
         
@@ -128,26 +137,22 @@ void calculation (vector<int> input) {
             exit(10);
         }
         angle1 = acos((pow(side1,2)+pow(side4,2) -pow(diagonal1, 2))/(2 *side1 *side4)) /PI * ANGLE_PER_PI;
-        
         angle2 = acos((pow(side1,2)+pow(side2,2) -pow(diagonal2, 2))/(2 *side1 *side2)) /PI * ANGLE_PER_PI;
         angle3 = acos((pow(side2,2)+pow(side3,2) -pow(diagonal1, 2))/(2 *side2 *side3)) /PI * ANGLE_PER_PI;
         angle4 = acos((pow(side3,2)+pow(side4,2) -pow(diagonal2, 2))/(2 *side3 *side4)) /PI * ANGLE_PER_PI;
+    cout << angle1 << " | " << angle2 << " | "<< angle3 << " | "<< angle4 << endl;
         
-        if (isEqual((angle1 + angle2), (angle3 + angle4) ) || isEqual((angle1 + angle3), (angle2 + angle4) ) ) {
-            cout << "error 3" << endl;
-            exit(10);
-        }
         double angle180 = 180;
         if (isEqual(angle1, angle180)|| isEqual(angle2, angle180) || isEqual(angle3, angle180) ||isEqual(angle4, angle180)) {
             cout << "error 4" << endl;
             exit(10);
         }
-    }
+    
 }
 
 int main(int argc, const char * argv[]) {
     
-   calculation (transformInput ( ));
+   transformInput ( );
     
     return 0;
 }
